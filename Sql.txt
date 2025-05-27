@@ -1,0 +1,35 @@
+CREATE DATABASE IF NOT EXISTS vehicle_rental_db;
+USE vehicle_rental_db;
+CREATE TABLE IF NOT EXISTS users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(15),
+    email VARCHAR(100) UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS vehicles (
+    vehicle_id INT AUTO_INCREMENT PRIMARY KEY,
+    vehicle_type ENUM('CAR', 'BIKE') NOT NULL,
+    brand VARCHAR(50) NOT NULL,
+    model VARCHAR(50) NOT NULL,
+    rent_per_day DECIMAL(10,2) NOT NULL,
+    available BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS cars (
+    car_id INT PRIMARY KEY,
+    seats INT NOT NULL,
+    fuel_type ENUM('PETROL', 'DIESEL', 'ELECTRIC') NOT NULL,
+    FOREIGN KEY (car_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
+);
+CREATE TABLE IF NOT EXISTS rentals (
+    rental_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    vehicle_id INT NOT NULL,
+    rent_start DATE NOT NULL,
+    rent_end DATE NOT NULL,
+    total_cost DECIMAL(10,2) NOT NULL,
+    status ENUM('BOOKED', 'RETURNED', 'CANCELLED') DEFAULT 'BOOKED',
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicles(vehicle_id) ON DELETE CASCADE
+);
